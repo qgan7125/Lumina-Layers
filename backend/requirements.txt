@@ -1,4 +1,7 @@
-gradio>=6.0.0
+# Web framework (replaces gradio)
+fastapi>=0.110.0
+uvicorn[standard]>=0.27.0
+aiofiles>=23.0.0
 python-multipart
 numpy
 opencv-python

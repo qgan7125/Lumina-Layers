@@ -269,3 +269,26 @@ lut-npyԤ��/Custom/*.npy
 # Reference projects (for development reference only)
 LD_ColorLayering-main/
 ChromaStack-main/
+
+# ==========================================
+# Frontend (React / Vite)
+# ==========================================
+
+# Dependencies
+frontend/node_modules/
+
+# Build output
+frontend/dist/
+
+# Auto-generated OpenAPI types (regenerated via `yarn generate-api`)
+frontend/src/api/generated/
+
+# Vite cache
+frontend/.vite/
+
+# ==========================================
+# Monorepo root
+# ==========================================
+
+# Root node_modules (concurrently etc.)
+node_modules/

@@ -1,0 +1,10 @@
+# Virtual environment
+fastapi-env/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Runtime session files
+../output/.sessions/
