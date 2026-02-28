@@ -53,6 +53,13 @@ frontend/src/
 ├── i18n/             ← i18next config and init only (no translation strings here)
 ├── styles/           ← Global SCSS (_variables.scss, _reset.scss, _typography.scss)
 └── types/            ← Hand-written TypeScript types not covered by OpenAPI
+
+public/
+└── locales/          ← Translation files loaded at runtime via i18next HTTP backend
+    ├── zh/
+    │   └── translation.json
+    └── en/
+        └── translation.json
 ```
 
 ## Styling Rules

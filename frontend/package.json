@@ -25,6 +25,7 @@
     "axios": "^1.13.6",
     "cropperjs": "^2.1.0",
     "i18next": "^25.8.13",
+    "i18next-http-backend": "^3.0.2",
     "react": "^19.2.0",
     "react-cropper": "^2.3.3",
     "react-dom": "^19.2.0",
