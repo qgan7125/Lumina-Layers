@@ -1,0 +1,23 @@
+@use 'variables' as *;
+
+.root {
+  border-top: none !important;
+  border-bottom: none !important;
+
+  &::before {
+    display: none;
+  }
+}
+
+.summary {
+  min-height: 40px !important;
+  padding: 0 $spacing-md !important;
+}
+
+.details {
+  padding: 0 $spacing-md $spacing-sm !important;
+}
+
+.sub {
+  margin-top: $spacing-sm;
+}

@@ -1,0 +1,13 @@
+@use 'variables' as *;
+
+.sperator {
+  width: $spacing-sm;
+
+  &:hover {
+    background-color: rgba(128, 128, 128, 0.2);
+  }
+
+  &:focus-visible {
+    outline: none;
+  }
+}

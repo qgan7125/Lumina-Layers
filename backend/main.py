@@ -13,6 +13,7 @@ if _project_root not in sys.path:
     sys.path.insert(0, _project_root)
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.openapi.docs import get_swagger_ui_html
 from fastapi.openapi.utils import get_openapi
 
@@ -44,6 +45,13 @@ app = FastAPI(
     docs_url=None,
     redoc_url=None,
     lifespan=lifespan,
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # ── Routers ───────────────────────────────────────────────────────────────────

@@ -123,14 +123,22 @@ async def job_status(job_id: str) -> JobStatusResponse:
     result = None
     if record.result:
         r = record.result
-        preview_path = r.get("preview_path", "")
-        session_id = os.path.basename(os.path.dirname(preview_path))
-        result = {
-            "preview_url": _preview_url(session_id, os.path.basename(preview_path)),
-            "color_palette": r.get("color_palette", []),
-            "dimensions": r.get("dimensions"),
-            "status_text": r.get("status", ""),
-        }
+        if "preview_path" in r:
+            preview_path = r.get("preview_path", "")
+            session_id = os.path.basename(os.path.dirname(preview_path))
+            result = {
+                "type": "preview",
+                "preview_url": _preview_url(session_id, os.path.basename(preview_path)),
+                "color_palette": r.get("color_palette", []),
+                "dimensions": r.get("dimensions"),
+                "status_text": r.get("status", ""),
+            }
+        elif "filename" in r:
+            result = {
+                "type": "3mf",
+                "file_url": f"/api/files/output/{r['filename']}",
+                "filename": r["filename"],
+            }
     return JobStatusResponse(
         job_id=job_id,
         status=record.status,

@@ -1,0 +1,16 @@
+@use 'variables' as *;
+
+.root {
+  padding: $spacing-sm $spacing-md;
+}
+
+.label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: $spacing-xs;
+  opacity: 0.75;
+}
+
+.cropBtn {
+  margin-top: $spacing-xs !important;
+}

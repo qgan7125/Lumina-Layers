@@ -10,6 +10,13 @@ export default defineConfig({
     }),
     react(),
   ],
+  css: {
+    preprocessorOptions: {
+      scss: {
+        loadPaths: ['src/styles'],
+      },
+    },
+  },
   server: {
     port: 5173,
     proxy: {

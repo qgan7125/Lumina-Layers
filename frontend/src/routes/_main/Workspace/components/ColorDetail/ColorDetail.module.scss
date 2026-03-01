@@ -1,0 +1,11 @@
+@use 'variables' as *;
+
+.root {
+  padding: $spacing-sm $spacing-md;
+}
+
+.label {
+  display: block;
+  font-weight: 500;
+  opacity: 0.75;
+}

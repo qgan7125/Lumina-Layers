@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
 import CssBaseline from '@mui/material/CssBaseline'
 import { useAppStore } from '../../../stores/appStore'
@@ -9,6 +9,10 @@ interface Props {
 
 const AppThemeProvider = ({ children }: Props) => {
   const isDark = useAppStore((s) => s.isDark)
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = isDark ? 'dark' : 'light'
+  }, [isDark])
 
   const theme = useMemo(
     () =>

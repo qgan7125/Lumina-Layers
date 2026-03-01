@@ -2,8 +2,10 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
+import CircularProgress from '@mui/material/CircularProgress'
 import Divider from '@mui/material/Divider'
 import FormControlLabel from '@mui/material/FormControlLabel'
+import LinearProgress from '@mui/material/LinearProgress'
 import MenuItem from '@mui/material/MenuItem'
 import Radio from '@mui/material/Radio'
 import RadioGroup from '@mui/material/RadioGroup'
@@ -13,17 +15,54 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import DownloadIcon from '@mui/icons-material/Download'
 import GridOnIcon from '@mui/icons-material/GridOn'
+import { useNotify } from '../../../components/Notification'
+import { useCalibration } from '../../../hooks/useCalibration'
+import { useCalibrationJobStatus } from '../../../hooks/useCalibrationJobStatus'
 import styles from './CalibrationTab.module.scss'
 
 type ColorMode = 'CMYW' | 'RYBW' | '6color' | '8color'
 
+const MODE_MAP: Record<ColorMode, string> = {
+  CMYW: 'CMYW',
+  RYBW: 'RYBW',
+  '6color': '6-Color',
+  '8color': '8-Color',
+}
+
 const CalibrationTab: React.FC = () => {
   const { t } = useTranslation()
+  const notify = useNotify()
 
   const [colorMode, setColorMode] = useState<ColorMode>('CMYW')
   const [blockSize, setBlockSize] = useState(20)
   const [gap, setGap] = useState(1)
   const [backingColor, setBackingColor] = useState('white')
+  const [jobId, setJobId] = useState<string | null>(null)
+
+  const calibrate = useCalibration()
+  const jobStatus = useCalibrationJobStatus(jobId)
+
+  const isRunning =
+    !!jobId &&
+    (jobStatus.data?.status === 'pending' || jobStatus.data?.status === 'running')
+  const isDone = jobStatus.data?.status === 'done'
+  const downloadUrl = isDone
+    ? (jobStatus.data?.result?.['file_url'] as string | undefined)
+    : undefined
+
+  const handleGenerate = async () => {
+    try {
+      const res = await calibrate.mutateAsync({
+        mode: MODE_MAP[colorMode],
+        block_size_mm: blockSize,
+        gap_mm: gap,
+        backing_color: backingColor,
+      })
+      setJobId(res.job_id)
+    } catch {
+      notify(t('cal_generate_error'), { severity: 'error' })
+    }
+  }
 
   return (
     <Box className={styles.root}>
@@ -94,10 +133,28 @@ const CalibrationTab: React.FC = () => {
           {/* Actions */}
           <Box className={styles.section}>
             <Stack spacing={1}>
-              <Button variant="contained" fullWidth color="primary">
-                {t('cal_generate_btn')}
+              <Button
+                variant="contained"
+                fullWidth
+                color="primary"
+                onClick={handleGenerate}
+                disabled={calibrate.isPending || isRunning}
+              >
+                {calibrate.isPending || isRunning ? (
+                  <CircularProgress size={18} color="inherit" />
+                ) : (
+                  t('cal_generate_btn')
+                )}
               </Button>
-              <Button variant="outlined" fullWidth startIcon={<DownloadIcon />} disabled>
+              <Button
+                variant="outlined"
+                fullWidth
+                startIcon={<DownloadIcon />}
+                disabled={!downloadUrl}
+                component={downloadUrl ? 'a' : 'button'}
+                href={downloadUrl}
+                download
+              >
                 {t('cal_download')}
               </Button>
             </Stack>
@@ -108,10 +165,44 @@ const CalibrationTab: React.FC = () => {
       {/* Preview Area */}
       <section className={styles.preview}>
         <Box className={styles.previewArea}>
-          <GridOnIcon className={styles.previewIcon} />
-          <Typography variant="body2" color="text.secondary">
-            {t('cal_preview')}
-          </Typography>
+          {isRunning ? (
+            <Stack spacing={2} alignItems="center" width="100%">
+              <CircularProgress />
+              <LinearProgress sx={{ width: '60%' }} />
+              <Typography variant="caption" color="text.secondary">
+                {t('cal_generating')}
+              </Typography>
+            </Stack>
+          ) : isDone && downloadUrl ? (
+            <Stack spacing={1} alignItems="center">
+              <GridOnIcon className={styles.previewIcon} color="success" />
+              <Typography variant="body2" color="text.secondary">
+                {t('cal_done')}
+              </Typography>
+              <Button
+                variant="contained"
+                size="small"
+                startIcon={<DownloadIcon />}
+                component="a"
+                href={downloadUrl}
+                download
+              >
+                {t('cal_download')}
+              </Button>
+            </Stack>
+          ) : (
+            <>
+              <GridOnIcon className={styles.previewIcon} />
+              <Typography variant="body2" color="text.secondary">
+                {t('cal_preview')}
+              </Typography>
+            </>
+          )}
+          {jobStatus.data?.error && (
+            <Typography variant="caption" color="error" mt={1}>
+              {jobStatus.data.error}
+            </Typography>
+          )}
         </Box>
       </section>
     </Box>

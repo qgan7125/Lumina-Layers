@@ -1,0 +1,9 @@
+@use 'variables' as *;
+
+.root {
+  padding: $spacing-sm $spacing-md;
+}
+
+.sub {
+  margin-top: $spacing-sm;
+}

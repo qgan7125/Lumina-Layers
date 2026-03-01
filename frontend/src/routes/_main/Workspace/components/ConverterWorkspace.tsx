@@ -2,119 +2,180 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
-import Chip from '@mui/material/Chip'
-import Divider from '@mui/material/Divider'
-import Paper from '@mui/material/Paper'
+import CircularProgress from '@mui/material/CircularProgress'
 import Stack from '@mui/material/Stack'
 import Tab from '@mui/material/Tab'
 import Tabs from '@mui/material/Tabs'
+import Tooltip from '@mui/material/Tooltip'
 import Typography from '@mui/material/Typography'
 import DownloadIcon from '@mui/icons-material/Download'
+import ImageIcon from '@mui/icons-material/Image'
 import ViewInArIcon from '@mui/icons-material/ViewInAr'
+import { useConverterStore } from '../../../../stores/converterStore'
+import { useApplyReplacement } from '../../../../hooks/useApplyReplacement'
+import { useConverterJobStatus } from '../../../../hooks/useConverterJobStatus'
+import { useHighlightColor } from '../../../../hooks/useHighlightColor'
 import styles from './ConverterWorkspace.module.scss'
 
 const ConverterWorkspace: React.FC = () => {
   const { t } = useTranslation()
-  const [activeView, setActiveView] = useState(0)
+  const store = useConverterStore()
+  const [activeView, setActiveView] = useState<'2d' | '3d'>('2d')
+  const [displayUrl, setDisplayUrl] = useState<string | null>(null)
+
+  const previewJob = useConverterJobStatus(store.previewJobId)
+  const generate3mfJob = useConverterJobStatus(store.generate3mfJobId)
+  const applyReplacement = useApplyReplacement()
+  const highlightColor = useHighlightColor()
+
+  const previewResult = previewJob.data?.status === 'done' ? previewJob.data.result : null
+  const previewUrl = (displayUrl ?? (previewResult?.['preview_url'] as string | undefined)) || null
+  const colorPalette = (previewResult?.['color_palette'] as Array<{ hex: string }> | undefined) ?? []
+
+  const generate3mfResult =
+    generate3mfJob.data?.status === 'done' ? generate3mfJob.data.result : null
+  const downloadUrl = generate3mfResult?.['file_url'] as string | undefined
+
+  const isPreviewLoading =
+    !!store.previewJobId &&
+    (previewJob.data?.status === 'pending' || previewJob.data?.status === 'running')
+
+  const is3mfLoading =
+    !!store.generate3mfJobId &&
+    (generate3mfJob.data?.status === 'pending' || generate3mfJob.data?.status === 'running')
+
+  const handleSwatchClick = (hex: string) => {
+    if (!store.sessionId || !previewJob.data?.result) return
+    highlightColor.mutate(
+      { session_id: store.sessionId, highlight_color: hex },
+      { onSuccess: (data) => setDisplayUrl(data.preview_url) },
+    )
+  }
+
+  const handleSwatchReplace = (fromHex: string, toHex: string) => {
+    if (!store.sessionId) return
+    const next = { ...store.replacementMap, [fromHex]: toHex }
+    store.addReplacement(fromHex, toHex)
+    applyReplacement.mutate(
+      { session_id: store.sessionId, color_replacements: next },
+      {
+        onSuccess: (data) => {
+          setDisplayUrl(data.preview_url)
+        },
+      },
+    )
+  }
 
   return (
     <Box className={styles.root}>
-      <Tabs value={activeView} onChange={(_, v) => setActiveView(v)} className={styles.viewTabs}>
-        <Tab label="2D Preview" />
-        <Tab
-          label={
-            <Stack direction="row" alignItems="center" spacing={0.5}>
-              <ViewInArIcon fontSize="inherit" />
-              <span>3D Preview</span>
-            </Stack>
-          }
-        />
+      <Tabs
+        value={activeView}
+        onChange={(_, v) => setActiveView(v)}
+        className={styles.tabs}
+        textColor="inherit"
+      >
+        <Tab value="2d" label={t('conv_tab_2d')} icon={<ImageIcon fontSize="small" />} iconPosition="start" />
+        <Tab value="3d" label={t('conv_tab_3d')} icon={<ViewInArIcon fontSize="small" />} iconPosition="start" />
       </Tabs>
 
-      {activeView === 0 && (
-        <Box className={styles.previewLayout}>
-          {/* 2D image area */}
-          <Box className={styles.imageArea}>
-            <Typography variant="body2" color="text.secondary" className={styles.placeholder}>
-              {t('conv_preview_btn')}
-            </Typography>
+      {activeView === '2d' && (
+        <Box className={styles.view2d}>
+          {/* Preview image */}
+          <Box className={styles.previewFrame}>
+            {isPreviewLoading ? (
+              <Box className={styles.placeholder}>
+                <CircularProgress />
+                <Typography variant="caption" color="text.secondary">
+                  {t('conv_generating_preview')}
+                </Typography>
+              </Box>
+            ) : previewUrl ? (
+              <img
+                src={previewUrl}
+                alt="preview"
+                className={styles.previewImg}
+                onClick={() => setDisplayUrl(null)}
+              />
+            ) : (
+              <Box className={styles.placeholder}>
+                <ImageIcon className={styles.placeholderIcon} />
+                <Typography variant="caption" color="text.secondary">
+                  {t('conv_preview_hint')}
+                </Typography>
+              </Box>
+            )}
           </Box>
 
-          {/* Palette + LUT */}
-          <Box className={styles.paletteArea}>
-            <Paper variant="outlined" className={styles.palettePanel}>
-              <Typography variant="caption" className={styles.panelLabel}>
-                {t('conv_palette_step1')}
-              </Typography>
-              <Box className={styles.colorGrid}>
-                <Typography variant="caption" color="text.secondary">
-                  {t('palette_empty')}
-                </Typography>
-              </Box>
-            </Paper>
-
-            <Paper variant="outlined" className={styles.palettePanel}>
-              <Typography variant="caption" className={styles.panelLabel}>
-                {t('conv_palette_step2')}
-              </Typography>
-              <Box className={styles.colorGrid}>
-                <Typography variant="caption" color="text.secondary">
-                  {t('lut_grid_load_hint')}
-                </Typography>
-              </Box>
-            </Paper>
-
-            <Divider />
-
-            <Box className={styles.replacementSection}>
-              <Stack direction="row" spacing={1} flexWrap="wrap">
-                <Button size="small" variant="contained" color="success" disabled>
-                  {t('conv_palette_apply_btn')}
-                </Button>
-                <Button size="small" variant="outlined" disabled>
-                  {t('conv_palette_undo_btn')}
-                </Button>
-                <Button size="small" variant="outlined" color="error" disabled>
-                  {t('conv_palette_clear_btn')}
-                </Button>
-              </Stack>
-              <Typography
-                variant="caption"
-                color="text.secondary"
-                className={styles.replacementHint}
-              >
-                {t('conv_palette_replacements_placeholder')}
-              </Typography>
+          {/* Color palette */}
+          {colorPalette.length > 0 && (
+            <Box className={styles.palette}>
+              {colorPalette.map((entry) => (
+                <Tooltip key={entry.hex} title={entry.hex}>
+                  <Box
+                    className={styles.swatch}
+                    sx={{ backgroundColor: entry.hex }}
+                    onClick={() => handleSwatchClick(entry.hex)}
+                    onContextMenu={(e) => {
+                      e.preventDefault()
+                      const replacement = prompt(`Replace ${entry.hex} with:`, entry.hex)
+                      if (replacement && replacement !== entry.hex) {
+                        handleSwatchReplace(entry.hex, replacement)
+                      }
+                    }}
+                  />
+                </Tooltip>
+              ))}
             </Box>
+          )}
 
-            <Box className={styles.activeReplacements}>
-              <Chip size="small" label={t('conv_palette_replacements_label')} variant="outlined" />
-            </Box>
+          {/* Replacement indicator */}
+          {Object.keys(store.replacementMap).length > 0 && (
+            <Typography variant="caption" color="text.secondary" className={styles.replacementHint}>
+              {Object.keys(store.replacementMap).length} {t('conv_replacements_active')}
+            </Typography>
+          )}
+        </Box>
+      )}
+
+      {activeView === '3d' && (
+        <Box className={styles.view3d}>
+          <Box className={styles.placeholder}>
+            <ViewInArIcon className={styles.placeholderIcon} />
+            <Typography variant="caption" color="text.secondary">
+              {t('conv_3d_hint')}
+            </Typography>
           </Box>
         </Box>
       )}
 
-      {activeView === 1 && (
-        <Box className={styles.viewerLayout}>
-          <Box className={styles.viewer3d}>
-            <ViewInArIcon className={styles.viewer3dIcon} />
-            <Typography variant="body2" color="text.secondary">
-              3D Preview
+      {/* Generate 3MF status + download */}
+      <Stack direction="row" spacing={1} className={styles.actions} alignItems="center">
+        {is3mfLoading && (
+          <Stack direction="row" spacing={1} alignItems="center">
+            <CircularProgress size={16} />
+            <Typography variant="caption" color="text.secondary">
+              {t('conv_generating_3mf')}
             </Typography>
-          </Box>
-          <Stack
-            direction="row"
-            spacing={2}
-            justifyContent="center"
-            className={styles.viewerActions}
-          >
-            <Button variant="contained" startIcon={<DownloadIcon />}>
-              {t('conv_download_file')}
-            </Button>
-            <Button variant="outlined">{t('settings_open_slicer_btn')}</Button>
           </Stack>
-        </Box>
-      )}
+        )}
+        {downloadUrl && (
+          <Button
+            variant="contained"
+            size="small"
+            startIcon={<DownloadIcon />}
+            component="a"
+            href={downloadUrl}
+            download
+          >
+            {t('conv_download_3mf')}
+          </Button>
+        )}
+        {generate3mfJob.data?.error && (
+          <Typography variant="caption" color="error">
+            {generate3mfJob.data.error}
+          </Typography>
+        )}
+      </Stack>
     </Box>
   )
 }
