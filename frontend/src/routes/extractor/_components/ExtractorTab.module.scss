@@ -1,0 +1,109 @@
+@use '../../../styles/variables' as *;
+
+.root {
+  display: flex;
+  height: 100%;
+  overflow: hidden;
+}
+
+.sidebar {
+  width: $sidebar-width;
+  flex-shrink: 0;
+  overflow-y: auto;
+  border-right: 1px solid rgba(128, 128, 128, 0.2);
+}
+
+.form {
+  padding-bottom: $spacing-lg;
+}
+
+.section {
+  padding: $spacing-sm $spacing-md;
+}
+
+.label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: $spacing-xs;
+  opacity: 0.75;
+}
+
+.uploadArea {
+  border: 2px dashed rgba(128, 128, 128, 0.4);
+  border-radius: $radius-md;
+  padding: $spacing-lg $spacing-md;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $spacing-xs;
+  cursor: pointer;
+  transition: border-color 0.2s;
+
+  &:hover {
+    border-color: rgba(128, 128, 128, 0.7);
+  }
+}
+
+.uploadIcon {
+  opacity: 0.35;
+  font-size: 2rem !important;
+}
+
+.actionBtn {
+  margin-top: $spacing-xs !important;
+}
+
+.content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: $spacing-md;
+  gap: $spacing-md;
+  overflow: auto;
+  min-width: 0;
+}
+
+.canvasRow {
+  display: flex;
+  gap: $spacing-md;
+  flex: 1;
+  min-height: 0;
+}
+
+.canvasArea {
+  flex: 1;
+  padding: $spacing-sm;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.areaLabel {
+  display: block;
+  font-weight: 500;
+  opacity: 0.75;
+  margin-bottom: $spacing-xs;
+}
+
+.canvasPlaceholder {
+  flex: 1;
+  border: 1px dashed rgba(128, 128, 128, 0.3);
+  border-radius: $radius-sm;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+}
+
+.resultArea {
+  flex-shrink: 0;
+  padding: $spacing-sm $spacing-md;
+}
+
+.resultGrid {
+  min-height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: $spacing-xs;
+}

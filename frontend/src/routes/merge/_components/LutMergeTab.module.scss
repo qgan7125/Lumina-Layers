@@ -1,0 +1,43 @@
+@use '../../../styles/variables' as *;
+
+.root {
+  height: 100%;
+  overflow-y: auto;
+  padding: $spacing-lg;
+}
+
+.content {
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+.card {
+  padding: $spacing-md;
+}
+
+.field {
+  padding: $spacing-sm 0;
+}
+
+.label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: $spacing-xs;
+  opacity: 0.75;
+}
+
+.divider {
+  margin: $spacing-xs 0 !important;
+}
+
+.modeChip {
+  margin-top: $spacing-xs !important;
+}
+
+.selectedChips {
+  margin-top: $spacing-sm !important;
+}
+
+.status {
+  margin-top: $spacing-sm !important;
+}

@@ -1,0 +1,46 @@
+@use '../../../styles/variables' as *;
+
+.root {
+  height: 100%;
+  overflow-y: auto;
+  padding: $spacing-lg;
+}
+
+.content {
+  max-width: 640px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+}
+
+.card {
+  padding: $spacing-md;
+}
+
+.cardTitle {
+  font-weight: 600;
+}
+
+.divider {
+  margin: $spacing-sm 0 !important;
+}
+
+.sliderGroup {
+  margin-top: $spacing-sm !important;
+}
+
+.sliderRow {
+  margin-top: $spacing-sm;
+}
+
+.sliderLabel {
+  display: block;
+  opacity: 0.75;
+  margin-bottom: 2px;
+}
+
+.freeColorHint {
+  margin-bottom: $spacing-sm;
+  font-size: 0.75rem;
+}

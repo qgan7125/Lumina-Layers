@@ -1,0 +1,111 @@
+@use '../../../../styles/variables' as *;
+
+.root {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  height: 100%;
+}
+
+.viewTabs {
+  flex-shrink: 0;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.2);
+}
+
+.previewLayout {
+  flex: 1;
+  display: flex;
+  gap: $spacing-md;
+  padding-top: $spacing-md;
+  overflow: hidden;
+  min-height: 0;
+}
+
+.imageArea {
+  flex: 1;
+  border: 2px dashed rgba(128, 128, 128, 0.3);
+  border-radius: $radius-md;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+}
+
+.placeholder {
+  opacity: 0.5;
+}
+
+.paletteArea {
+  width: 280px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+  overflow-y: auto;
+  padding-bottom: $spacing-sm;
+}
+
+.palettePanel {
+  padding: $spacing-sm;
+}
+
+.panelLabel {
+  display: block;
+  font-weight: 500;
+  margin-bottom: $spacing-xs;
+  opacity: 0.75;
+}
+
+.colorGrid {
+  min-height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.replacementSection {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+  padding: $spacing-xs 0;
+}
+
+.replacementHint {
+  display: block;
+}
+
+.activeReplacements {
+  padding: $spacing-xs 0;
+}
+
+.viewerLayout {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding-top: $spacing-md;
+  gap: $spacing-md;
+  overflow: hidden;
+}
+
+.viewer3d {
+  flex: 1;
+  border: 2px dashed rgba(128, 128, 128, 0.3);
+  border-radius: $radius-md;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-sm;
+  min-height: 0;
+}
+
+.viewer3dIcon {
+  font-size: 3rem !important;
+  opacity: 0.25;
+}
+
+.viewerActions {
+  flex-shrink: 0;
+  padding-bottom: $spacing-sm;
+}

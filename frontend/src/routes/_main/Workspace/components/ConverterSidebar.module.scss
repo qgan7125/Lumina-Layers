@@ -1,0 +1,69 @@
+@use '../../../../styles/variables' as *;
+
+.root {
+  height: 100%;
+  padding-bottom: $spacing-lg;
+}
+
+.section {
+  padding: $spacing-sm $spacing-md;
+}
+
+.label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: $spacing-xs;
+  opacity: 0.75;
+}
+
+.hint {
+  display: block;
+  margin-top: $spacing-xs;
+}
+
+.uploadArea {
+  border: 2px dashed rgba(128, 128, 128, 0.4);
+  border-radius: $radius-md;
+  padding: $spacing-lg $spacing-md;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $spacing-xs;
+  cursor: pointer;
+  transition: border-color 0.2s;
+
+  &:hover {
+    border-color: rgba(128, 128, 128, 0.7);
+  }
+}
+
+.uploadIcon {
+  opacity: 0.35;
+  font-size: 2rem !important;
+}
+
+.cropBtn {
+  margin-top: $spacing-xs !important;
+}
+
+.subSection {
+  margin-top: $spacing-sm;
+}
+
+.accordion {
+  border-top: none !important;
+  border-bottom: none !important;
+
+  &::before {
+    display: none;
+  }
+}
+
+.accordionSummary {
+  min-height: 40px !important;
+  padding: 0 $spacing-md !important;
+}
+
+.accordionDetails {
+  padding: 0 $spacing-md $spacing-sm !important;
+}

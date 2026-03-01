@@ -1,0 +1,39 @@
+@use '../../../styles/variables' as *;
+
+.root {
+  height: 100%;
+  overflow-y: auto;
+  padding: $spacing-lg;
+}
+
+.content {
+  max-width: 640px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+}
+
+.card {
+  padding: $spacing-md;
+}
+
+.cardTitle {
+  font-weight: 600;
+}
+
+.divider {
+  margin: $spacing-sm 0 !important;
+}
+
+.statsRow {
+  margin-bottom: $spacing-sm !important;
+}
+
+.actions {
+  margin-top: $spacing-sm !important;
+}
+
+.noSlicer {
+  flex: 1;
+}

@@ -1,0 +1,47 @@
+@use '../../../styles/variables' as *;
+
+.appBar {
+  z-index: $z-header;
+}
+
+.toolbar {
+  padding: 0 $spacing-md;
+  gap: $spacing-md;
+  min-height: 52px !important;
+}
+
+.logo {
+  font-weight: 700;
+  white-space: nowrap;
+  flex-shrink: 0;
+  font-size: 1rem;
+}
+
+.tabs {
+  flex: 1;
+  min-height: 52px;
+}
+
+.tab {
+  min-height: 52px !important;
+  padding: 0 $spacing-md !important;
+  font-size: 0.8rem !important;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: $spacing-xs;
+  flex-shrink: 0;
+}
+
+.langBtn {
+  width: 32px;
+  height: 32px;
+}
+
+.langLabel {
+  font-weight: 700;
+  font-size: 0.75rem !important;
+  line-height: 1;
+}
